@@ -45,6 +45,13 @@ export function daysAgoDate(n: number): string {
   return shiftDate(today(), -n);
 }
 
+export function monthStart(): string {
+  const ist = toIst(new Date());
+  const y = ist.getUTCFullYear();
+  const m = String(ist.getUTCMonth() + 1).padStart(2, '0');
+  return `${y}-${m}-01`;
+}
+
 export function isToday(dateStr: string): boolean {
   return dateStr === today();
 }

@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import type { Visit, NpsResponse } from '../lib/types';
-import { today } from '../lib/dates';
+import { today, monthStart } from '../lib/dates';
 import { ALL_STORES_ID } from '../lib/constants';
 import { seedIfEmpty, saveVisits, upsertResponse, getLastStorageError } from '../lib/repository';
 
 export type NpsState = {
   visits:          Visit[];
   responses:       NpsResponse[];
-  selectedStoreId: string;        // '' = all stores
-  selectedDate:    string;        // 'YYYY-MM-DD'
+  selectedStoreId: string;
+  fromDate:        string;   // 'YYYY-MM-DD'
+  toDate:          string;   // 'YYYY-MM-DD'
   searchQuery:     string;
   openVisitId:     string | null;
   addVisitOpen:    boolean;
@@ -20,7 +21,8 @@ type Action =
   | { type: 'ADD_VISIT';         visit: Visit }
   | { type: 'UPSERT_RESPONSE';   responses: NpsResponse[] }
   | { type: 'SET_STORE';         storeId: string }
-  | { type: 'SET_DATE';          date: string }
+  | { type: 'SET_FROM_DATE';     date: string }
+  | { type: 'SET_TO_DATE';       date: string }
   | { type: 'SET_SEARCH';        query: string }
   | { type: 'CLEAR_FILTERS' }
   | { type: 'OPEN_FORM';         visitId: string }
@@ -40,12 +42,14 @@ function reducer(state: NpsState, action: Action): NpsState {
       return { ...state, responses: action.responses };
     case 'SET_STORE':
       return { ...state, selectedStoreId: action.storeId };
-    case 'SET_DATE':
-      return { ...state, selectedDate: action.date };
+    case 'SET_FROM_DATE':
+      return { ...state, fromDate: action.date };
+    case 'SET_TO_DATE':
+      return { ...state, toDate: action.date };
     case 'SET_SEARCH':
       return { ...state, searchQuery: action.query };
     case 'CLEAR_FILTERS':
-      return { ...state, selectedStoreId: ALL_STORES_ID, selectedDate: today(), searchQuery: '' };
+      return { ...state, selectedStoreId: ALL_STORES_ID, fromDate: monthStart(), toDate: today(), searchQuery: '' };
     case 'OPEN_FORM':
       return { ...state, openVisitId: action.visitId };
     case 'CLOSE_FORM':
@@ -67,7 +71,8 @@ const initialState: NpsState = {
   visits:          [],
   responses:       [],
   selectedStoreId: ALL_STORES_ID,
-  selectedDate:    today(),
+  fromDate:        monthStart(),
+  toDate:          today(),
   searchQuery:     '',
   openVisitId:     null,
   addVisitOpen:    false,
@@ -77,7 +82,7 @@ const initialState: NpsState = {
 type NpsCtx = {
   state: NpsState;
   dispatch: React.Dispatch<Action>;
-  addVisit:     (visit: Visit) => void;
+  addVisit:       (visit: Visit) => void;
   submitResponse: (resp: Omit<NpsResponse, 'id' | 'band' | 'submittedAt'>) => void;
   showToast: (kind: 'success' | 'error', message: string) => void;
 };
