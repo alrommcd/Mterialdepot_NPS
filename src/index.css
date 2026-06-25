@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-amber-400: #FBBF24;
+  --color-amber-500: #F59E0B;
+  --color-crm-dark: #0F1115;
+  --color-crm-card: #FFFFFF;
+  --color-crm-bg: #F7F7F8;
+  --color-crm-border: #ECECEF;
+  --color-crm-muted: #9CA3AF;
+  --color-crm-primary: #1F2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #F7F7F8;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
