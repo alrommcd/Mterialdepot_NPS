@@ -7,16 +7,16 @@ import CustomerTable from './CustomerTable';
 import NpsFormModal from './NpsFormModal';
 import Toast from './Toast';
 
-type NpsTab = 'overview' | 'tracker';
+type NpsTab = 'tracker' | 'overview';
 
 const TAB_LABELS: Record<NpsTab, string> = {
-  overview: 'Overview',
   tracker:  'Tracker',
+  overview: 'Overview',
 };
 
 export default function NpsPage() {
   const { state } = useNps();
-  const [activeTab, setActiveTab] = useState<NpsTab>('overview');
+  const [activeTab, setActiveTab] = useState<NpsTab>('tracker');
 
   const storeLabel =
     state.selectedStoreId === ALL_STORES_ID
